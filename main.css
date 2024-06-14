@@ -1,0 +1,8 @@
+#additional-details {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+}
+
+#ee-draws {
+    width: 100%;
+}
