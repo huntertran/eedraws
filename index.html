@@ -13,22 +13,39 @@
 <body>
     <div id="ee-draws"></div>
     <div id="additional-details">
-        <div id="latest-draw-details">
+        <div>
             <h1>Latest Draws</h1>
-            <div id="latest-draw-details">
+            <div id="latest-draw-container">
                 <div id="latest-draw-details">
-                    <p>Draw Number: <span data-bind="text: drawNumber"></span></p>
-                    <p>Draw Date:
-                        <span data-bind="text: drawDate"></span>
-                        (<span data-bind="text: elapsedTime"></span> days ago)
-                    </p>
-                    <p>Category: <span data-bind="text: category"></span></p>
-                    <p>Draw CRS Score: <span data-bind="text: crsScore"></span></p>
-                    <p>Number of Invitations: <span data-bind="text: invitations"></span></p>
+                    <table>
+                        <tr>
+                            <td>Draw Number:</td>
+                            <td><span data-bind="text: drawNumber"></span></td>
+                        </tr>
+                        <tr>
+                            <td>Draw Date:</td>
+                            <td><span data-bind="text: drawDate"></span> (<span data-bind="text: elapsedTime"></span>
+                                days ago)</td>
+                        </tr>
+                        <tr>
+                            <td>Category:</td>
+                            <td><span data-bind="text: category"></span></td>
+                        </tr>
+                        <tr>
+                            <td>Draw CRS Score:</td>
+                            <td><span data-bind="text: crsScore"></span></td>
+                        </tr>
+                        <tr>
+                            <td>Number of Invitations:</td>
+                            <td><span data-bind="text: invitations"></span></td>
+                        </tr>
+                    </table>
                 </div>
+                <div id="score-distribution"></div>
             </div>
         </div>
-        <div id="score-distribution"></div>
+    </div>
+
     </div>
 
     <script src="https://cdn.plot.ly/plotly-2.32.0.min.js"

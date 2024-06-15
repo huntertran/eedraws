@@ -1,8 +1,43 @@
-#additional-details {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
+/* #additional-details {
+    display: flex;
+    flex-direction: row;
+} */
+
+#latest-draw-container {
+    display: flex;
+    width: 100%;
+}
+
+@media (min-width: 768px) {
+
+    /* Adjust this breakpoint as needed */
+    #latest-draw-container {
+        flex-direction: row;
+        /* Align children in a row on desktop */
+        flex-wrap: wrap;
+        /* Allow the items to wrap as needed */
+    }
+
+    #latest-draw-container>* {
+        flex-basis: 50%;
+        /* Each child takes up 50% of the container's width */
+        box-sizing: border-box;
+        /* Include padding and border in the element's total width */
+    }
+}
+
+#latest-draw-details {
+    min-width: 50%;
+}
+
+#latest-draw-details span {
+    font-weight: bold;
 }
 
 #ee-draws {
     width: 100%;
+}
+
+#score-distribution {
+    height: 400px;
 }

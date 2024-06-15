@@ -1,6 +1,7 @@
 async function start() {
     const data = await fetchDataAndStore();
     draw(prepareData(data));
+    drawLastScoreContribution(data.rounds[0]);
     ko.applyBindings(new LastRoundViewModel(data.rounds[0]));
 }
 async function fetchDataAndStore() {
@@ -26,10 +27,19 @@ function prepareData(data) {
 function draw(data) {
     eeDraws = document.getElementById('ee-draws');
 
+    data.line = {
+        shape: 'spline',
+        smoothing: 0.7,
+    }
+
+    var today = new Date();
+    let sixMonthsAgo = new Date();
+    sixMonthsAgo.setMonth(today.getMonth() - 6);
+
     var layout = {
         margin: { t: 0 },
         xaxis: {
-            autorange: true,
+            autorange: false,
             title: {
                 text: 'Draw Date'
             },
@@ -51,13 +61,14 @@ function draw(data) {
                     { step: 'all' }
                 ]
             },
-            rangeslider: { range: ['2015-02-17', '2017-02-16'] },
+            range: [data.x[30], data.x[0]],
+            rangeslider: {},
         },
         yaxis: {
             title: {
                 text: 'CRS Score'
             },
-            fixedrange: true
+            fixedrange: false
         }
     };
 
@@ -66,6 +77,40 @@ function draw(data) {
     };
 
     Plotly.newPlot(eeDraws, [data], layout, config);
+}
+
+function drawLastScoreContribution(data) {
+
+    let myData = [
+        {
+            x: ["dd1", "dd2", "dd3", "dd4", "dd5", "dd6", "dd7", "dd8", "dd9", "dd10", "dd11", "dd12", "dd13", "dd14", "dd15", "dd16", "dd17"],
+            y: [data.dd1, data.dd2, data.dd3, data.dd4, data.dd5, data.dd6, data.dd7, data.dd8, data.dd9, data.dd10, data.dd11, data.dd12, data.dd13, data.dd14, data.dd15, data.dd16, data.dd17],
+            type: 'bar'
+        }
+    ];
+
+    var layout = {
+        margin: { t: 0 },
+        autosize: true,
+        xaxis: {
+            autorange: false,
+            title: {
+                text: 'Distribution'
+            },
+        },
+        yaxis: {
+            title: {
+                text: 'CRS Score'
+            },
+            // range: [0, Math.max(...myData[0].y)]
+        }
+    };
+
+    var config = {
+        responsive: true
+    };
+
+    Plotly.newPlot('score-distribution', myData, layout, config);
 }
 
 function LastRoundViewModel(lastRound) {
