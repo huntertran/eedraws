@@ -5,7 +5,6 @@
 
 #latest-draw-container {
     display: flex;
-    width: 100%;
 }
 
 @media (min-width: 768px) {
@@ -18,26 +17,28 @@
         /* Allow the items to wrap as needed */
     }
 
-    #latest-draw-container>* {
-        flex-basis: 50%;
-        /* Each child takes up 50% of the container's width */
-        box-sizing: border-box;
-        /* Include padding and border in the element's total width */
+    #latest-draw-details {
+        min-width: 30%;
+    }
+
+    #score-distribution {
+        flex: 60%;
+        /* Takes up 70% of the parent container */
     }
 }
 
 #latest-draw-details {
-    min-width: 50%;
+    min-width: 30%;
 }
 
 #latest-draw-details span {
     font-weight: bold;
 }
 
-#ee-draws {
-    width: 100%;
-}
-
 #score-distribution {
     height: 400px;
+}
+
+.rangeslider-rangeplot.xy .plot .scatterlayer.mlayer .text {
+    display: none;
 }
