@@ -7,7 +7,8 @@ async function start() {
     ko.applyBindings(new LastRoundViewModel(data.rounds[0]));
 }
 async function fetchDataAndStore() {
-    const url = "https://www.canada.ca/content/dam/ircc/documents/json/ee_rounds_123_en.json";
+    const today = new Date().toISOString().slice(0, 10); // Format: YYYY-MM-DD
+    const url = `https://www.canada.ca/content/dam/ircc/documents/json/ee_rounds_123_en.json?date=${today}`;
     const response = await fetch(url);
     if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
@@ -146,13 +147,13 @@ function drawLastScoreContribution(data) {
 
 function drawScoreDistributionsHeatmap(data) {
     let drawData = [{
-        x: data.x,
-        y: ["601-1200", "501-600", "491-500", "481-490", "471-480", "461-470", "451-460", "441-450", "431-440", "421-430", "411-420", "401-410", "351-400", "301-350", "0-300"],
-        z: data.z,
-        text: data.z,
+        // y: data.x,
+        x: ["0-300", "301-350", "351-400", "401-410", "411-420", "421-430", "431-440", "441-450", "451-460", "461-470", "471-480", "481-490", "491-500", "501-600", "601-1200"],
+        z: data.z.map(arr => arr.reverse()),
+        // text: data.z,
         textposition: 'auto',
         type: 'heatmap',
-        // colorscale: 'Viridis',
+        colorscale: 'Reds',
         showscale: true
     }];
 
