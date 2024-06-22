@@ -22,6 +22,7 @@ function prepareData(data) {
     let y = [];
     let z = [];
     let text = [];
+    let category = [];
     for (let i = 0; i < data.rounds.length; i++) {
         x.push(data.rounds[i].drawDate);
         y.push(parseInt(data.rounds[i].drawCRS));
@@ -43,6 +44,7 @@ function prepareData(data) {
             parseInt(data.rounds[i].dd17.replace(/,/g, ''), 10)
         ]);
         text.push(data.rounds[i].drawCRS);
+        category.push(data.rounds[i].drawName);
     }
 
     return { x, y, z, text };
@@ -54,13 +56,14 @@ function draw(data) {
     let drawData = {
         x: data.x,
         y: data.y,
+        color: data.category,
         text: data.text,
         line: {
             shape: 'spline',
             smoothing: 0.7,
         },
         type: 'scattergl',
-        mode: 'lines+markers+text',
+        mode: 'lines+markers',
         textposition: 'top center',
     }
 
@@ -71,7 +74,7 @@ function draw(data) {
     var layout = {
         margin: { t: 0 },
         xaxis: {
-            autorange: false,
+            autorange: true,
             title: {
                 text: 'Draw Date'
             },
@@ -114,10 +117,10 @@ function draw(data) {
 function drawLastScoreContribution(data) {
     let myData = [
         {
-            x: ["601-1200", "501-600", "491-500", "481-490", "471-480", "461-470", "451-460", "441-450", "431-440", "421-430", "411-420", "401-410", "351-400", "301-350", "0-300"],
-            y: [data.dd1, data.dd2, data.dd4, data.dd5, data.dd6, data.dd7, data.dd8, data.dd10, data.dd11, data.dd12, data.dd13, data.dd14, data.dd15, data.dd16, data.dd17],
+            x: ["601-1200", "501-600", "491-500", "481-490", "471-480", "461-470", "451-460", "441-450", "431-440", "421-430", "411-420", "401-410", "351-400", "301-350", "0-300"].reverse(),
+            y: [data.dd1, data.dd2, data.dd4, data.dd5, data.dd6, data.dd7, data.dd8, data.dd10, data.dd11, data.dd12, data.dd13, data.dd14, data.dd15, data.dd16, data.dd17].reverse(),
             type: 'bar',
-            text: [data.dd1, data.dd2, data.dd4, data.dd5, data.dd6, data.dd7, data.dd8, data.dd10, data.dd11, data.dd12, data.dd13, data.dd14, data.dd15, data.dd16, data.dd17],
+            text: [data.dd1, data.dd2, data.dd4, data.dd5, data.dd6, data.dd7, data.dd8, data.dd10, data.dd11, data.dd12, data.dd13, data.dd14, data.dd15, data.dd16, data.dd17].reverse(),
             textposition: 'auto',
         }
     ];
@@ -127,13 +130,13 @@ function drawLastScoreContribution(data) {
         xaxis: {
             autorange: true,
             title: {
-                text: 'Distribution'
+                text: 'CRS Score Range'
             },
         },
         yaxis: {
             autorange: true,
             title: {
-                text: 'CRS Score'
+                text: 'Number of profiles in the pool'
             },
         }
     };
