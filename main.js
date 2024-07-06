@@ -13,6 +13,7 @@ async function start() {
 
 async function fetchDataAndStore() {
     const today = new Date().toISOString().slice(0, 10); // Format: YYYY-MM-DD
+    // const today = new Date().toISOString().slice(0, 13); // Format: YYYY-MM-DD
     const url = `https://www.canada.ca/content/dam/ircc/documents/json/ee_rounds_123_en.json?date=${today}`;
     const response = await fetch(url);
     if (!response.ok) {
@@ -36,21 +37,21 @@ function prepareData(data, selectedCategories = []) {
         x.push(data.rounds[i].drawDate);
         y.push(parseInt(data.rounds[i].drawCRS));
         z.push([
-            parseInt(data.rounds[i].dd1.replace(/,/g, ''), 10),
-            parseInt(data.rounds[i].dd2.replace(/,/g, ''), 10),
-            parseInt(data.rounds[i].dd4.replace(/,/g, ''), 10),
-            parseInt(data.rounds[i].dd5.replace(/,/g, ''), 10),
-            parseInt(data.rounds[i].dd6.replace(/,/g, ''), 10),
-            parseInt(data.rounds[i].dd7.replace(/,/g, ''), 10),
-            parseInt(data.rounds[i].dd8.replace(/,/g, ''), 10),
-            parseInt(data.rounds[i].dd10.replace(/,/g, ''), 10),
-            parseInt(data.rounds[i].dd11.replace(/,/g, ''), 10),
-            parseInt(data.rounds[i].dd12.replace(/,/g, ''), 10),
-            parseInt(data.rounds[i].dd13.replace(/,/g, ''), 10),
-            parseInt(data.rounds[i].dd14.replace(/,/g, ''), 10),
-            parseInt(data.rounds[i].dd15.replace(/,/g, ''), 10),
-            parseInt(data.rounds[i].dd16.replace(/,/g, ''), 10),
-            parseInt(data.rounds[i].dd17.replace(/,/g, ''), 10)
+            data.rounds[i].dd1.replace(/,/g, ''), 10,
+            data.rounds[i].dd2.replace(/,/g, ''), 10,
+            data.rounds[i].dd4.replace(/,/g, ''), 10,
+            data.rounds[i].dd5.replace(/,/g, ''), 10,
+            data.rounds[i].dd6.replace(/,/g, ''), 10,
+            data.rounds[i].dd7.replace(/,/g, ''), 10,
+            data.rounds[i].dd8.replace(/,/g, ''), 10,
+            data.rounds[i].dd10.replace(/,/g, ''), 10,
+            data.rounds[i].dd11.replace(/,/g, ''), 10,
+            data.rounds[i].dd12.replace(/,/g, ''), 10,
+            data.rounds[i].dd13.replace(/,/g, ''), 10,
+            data.rounds[i].dd14.replace(/,/g, ''), 10,
+            data.rounds[i].dd15.replace(/,/g, ''), 10,
+            data.rounds[i].dd16.replace(/,/g, ''), 10,
+            data.rounds[i].dd17.replace(/,/g, ''), 10
         ]);
         text.push(data.rounds[i].drawCRS);
 
@@ -115,17 +116,19 @@ function drawCRSScoreHistory(data, selectedCategories = []) {
             },
             range: [data.x[30], data.x[0]],
             rangeslider: {},
+            fixedrange: true
         },
         yaxis: {
             title: {
                 text: 'CRS Score'
             },
-            fixedrange: false
+            fixedrange: true
         }
     };
 
     var config = {
-        responsive: true
+        responsive: true,
+        displayModeBar: false
     };
 
     Plotly.newPlot(eeDraws, [drawData], layout, config);
@@ -149,17 +152,20 @@ function drawLastScoreContribution(data) {
             title: {
                 text: 'CRS Score Range'
             },
+            fixedrange: true
         },
         yaxis: {
             autorange: true,
             title: {
                 text: 'Number of profiles in the pool'
             },
+            fixedrange: true
         }
     };
 
     var config = {
-        responsive: true
+        responsive: true,
+        displayModeBar: false
     };
 
     Plotly.newPlot('score-distribution', myData, layout, config);
