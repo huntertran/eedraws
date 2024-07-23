@@ -2,7 +2,7 @@ let originalData;
 let preparedData;
 
 async function start() {
-    let originalData = await fetchDataAndStore();
+    originalData = await fetchDataAndStore();
     preparedData = prepareData(originalData);
     ko.applyBindings(new LastRoundViewModel(originalData.rounds[0]), document.getElementById('latest-draw-container'));
     ko.applyBindings(new ScoreDistributionOptionsModel(preparedData.category), document.getElementById('category-select-container'));
