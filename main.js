@@ -2,7 +2,7 @@ let originalData;
 let preparedData;
 
 async function start() {
-    originalData = await fetchDataAndStore();
+    let originalData = await fetchDataAndStore();
     preparedData = prepareData(originalData);
     ko.applyBindings(new LastRoundViewModel(originalData.rounds[0]), document.getElementById('latest-draw-container'));
     ko.applyBindings(new ScoreDistributionOptionsModel(preparedData.category), document.getElementById('category-select-container'));
@@ -12,8 +12,8 @@ async function start() {
 }
 
 async function fetchDataAndStore() {
-    const today = new Date().toISOString().slice(0, 10); // Format: YYYY-MM-DD
-    // const today = new Date().toISOString().slice(0, 13); // Format: YYYY-MM-DD
+    // const today = new Date().toISOString().slice(0, 10); // Format: YYYY-MM-DD
+    const today = new Date().toISOString().slice(0, 13); // Format: YYYY-MM-DD
     const url = `https://www.canada.ca/content/dam/ircc/documents/json/ee_rounds_123_en.json?date=${today}`;
     const response = await fetch(url);
     if (!response.ok) {
@@ -37,21 +37,21 @@ function prepareData(data, selectedCategories = []) {
         x.push(data.rounds[i].drawDate);
         y.push(parseInt(data.rounds[i].drawCRS));
         z.push([
-            data.rounds[i].dd1.replace(/,/g, ''), 10,
-            data.rounds[i].dd2.replace(/,/g, ''), 10,
-            data.rounds[i].dd4.replace(/,/g, ''), 10,
-            data.rounds[i].dd5.replace(/,/g, ''), 10,
-            data.rounds[i].dd6.replace(/,/g, ''), 10,
-            data.rounds[i].dd7.replace(/,/g, ''), 10,
-            data.rounds[i].dd8.replace(/,/g, ''), 10,
-            data.rounds[i].dd10.replace(/,/g, ''), 10,
-            data.rounds[i].dd11.replace(/,/g, ''), 10,
-            data.rounds[i].dd12.replace(/,/g, ''), 10,
-            data.rounds[i].dd13.replace(/,/g, ''), 10,
-            data.rounds[i].dd14.replace(/,/g, ''), 10,
-            data.rounds[i].dd15.replace(/,/g, ''), 10,
-            data.rounds[i].dd16.replace(/,/g, ''), 10,
-            data.rounds[i].dd17.replace(/,/g, ''), 10
+            parseInt(data.rounds[i].dd1.replace(/,/g, '')),
+            parseInt(data.rounds[i].dd2.replace(/,/g, '')),
+            parseInt(data.rounds[i].dd4.replace(/,/g, '')),
+            parseInt(data.rounds[i].dd5.replace(/,/g, '')),
+            parseInt(data.rounds[i].dd6.replace(/,/g, '')),
+            parseInt(data.rounds[i].dd7.replace(/,/g, '')),
+            parseInt(data.rounds[i].dd8.replace(/,/g, '')),
+            parseInt(data.rounds[i].dd10.replace(/,/g, '')),
+            parseInt(data.rounds[i].dd11.replace(/,/g, '')),
+            parseInt(data.rounds[i].dd12.replace(/,/g, '')),
+            parseInt(data.rounds[i].dd13.replace(/,/g, '')),
+            parseInt(data.rounds[i].dd14.replace(/,/g, '')),
+            parseInt(data.rounds[i].dd15.replace(/,/g, '')),
+            parseInt(data.rounds[i].dd16.replace(/,/g, '')),
+            parseInt(data.rounds[i].dd17.replace(/,/g, ''))
         ]);
         text.push(data.rounds[i].drawCRS);
 
@@ -173,10 +173,10 @@ function drawLastScoreContribution(data) {
 
 function drawScoreDistributionsHeatmap(data) {
     let drawData = [{
-        // y: data.x,
+        y: data.x,
         x: ["0-300", "301-350", "351-400", "401-410", "411-420", "421-430", "431-440", "441-450", "451-460", "461-470", "471-480", "481-490", "491-500", "501-600", "601-1200"],
-        z: data.z.map(arr => arr.reverse()),
-        // text: data.z,
+        z: data.z.filter(arr => !arr.every(val => val === 0)).map(arr => arr.reverse()),
+        // text: data.x,
         textposition: 'auto',
         type: 'heatmap',
         colorscale: 'Reds',
