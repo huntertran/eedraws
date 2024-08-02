@@ -183,26 +183,27 @@ function drawScoreDistributionsHeatmap(data) {
         showscale: true
     }];
 
-    var config = {
-        responsive: true
+    var layout = {
+        xaxis: {
+            autorange: true,
+            title: {
+                text: 'CRS Score Range'
+            },
+            fixedrange: true
+        },
+        yaxis: {
+            autorange: true,
+            fixedrange: true
+        }
     };
 
-    var testData1 = [
-        {
-            z: [[1, 20, 30], [20, 1, 60], [30, 60, 1]],
-            type: 'heatmap'
-        }
-    ];
-
-    var testData = [
-        {
-            z: data.z,
-            type: 'heatmap'
-        }
-    ];
+    var config = {
+        responsive: true,
+        displayModeBar: false
+    };
 
     // Plotly.newPlot('score-distributions-heatmap', data, layout, config);
-    Plotly.newPlot('score-distributions-heatmap', drawData);
+    Plotly.newPlot('score-distributions-heatmap', drawData, layout, config);
 
 }
 
