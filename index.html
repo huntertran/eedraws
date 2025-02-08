@@ -103,12 +103,14 @@
             <div class="d-flex bg-primary mb-3">
                 <h1 class="h2 text-light">CRS Score History</h1>
             </div>
-            <div class="d-flex"
-                 id="category-select-container">
-                <select title="Category"
-                        data-bind="options: categories, value: selectedCategory"
-                        multiple>
-                </select>
+            <div id="category-select-container"
+                 data-bind='foreach: categories'>
+                <div>
+                    <input type="checkbox"
+                           data-bind="checked: selected, value: name"
+                           title="Category">
+                    <label data-bind="text: name"></label>
+                </div>
             </div>
             <div id="ee-draws"></div>
         </div>

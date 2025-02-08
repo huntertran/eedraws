@@ -4,4 +4,17 @@
 
 #category-select-container {
     margin-bottom: 20px;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: space-between;
+}
+
+#category-select-container>div {
+    flex-basis: 400px;
+}
+
+input[type="checkbox"] {
+    width: 20px;
+    height: 20px;
 }

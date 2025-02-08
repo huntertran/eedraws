@@ -1,19 +1,22 @@
 let originalData;
 let preparedData;
+let categories = [];
 
 async function start() {
     originalData = await fetchDataAndStore();
-    preparedData = prepareData(originalData);
+    preparedData = getCategories(originalData);
+
     ko.applyBindings(new LastRoundViewModel(originalData.rounds[0]), document.getElementById('latest-draw-container'));
-    ko.applyBindings(new ScoreDistributionOptionsModel(preparedData.category), document.getElementById('category-select-container'));
-    drawCRSScoreHistory(preparedData);
+    ko.applyBindings(categories, document.getElementById('category-select-container'));
+
+    drawCRSScoreHistory();
     drawScoreDistributionsHeatmap(preparedData);
     drawLastScoreContribution(originalData.rounds[0]);
 }
 
 async function fetchDataAndStore() {
-    // const today = new Date().toISOString().slice(0, 10); // Format: YYYY-MM-DD
-    const today = new Date().toISOString().slice(0, 13); // Format: YYYY-MM-DD
+    const today = new Date().toISOString().slice(0, 10); // Format: YYYY-MM-DD
+    // const today = new Date().toISOString().slice(0, 13); // Format: YYYY-MM-DD
     const url = `https://www.canada.ca/content/dam/ircc/documents/json/ee_rounds_123_en.json?date=${today}`;
     const response = await fetch(url);
     if (!response.ok) {
@@ -23,14 +26,56 @@ async function fetchDataAndStore() {
     return response.json();
 }
 
-function prepareData(data, selectedCategories = []) {
+function getCategories(data) {
+    let x = [];
+    let y = [];
+    let z = [];
+    let text = [];
+    let selectedCategories = [];
+    let category = new Set();
+    for (let i = 0; i < data.rounds.length; i++) {
+        if (selectedCategories.length > 0 && !selectedCategories.includes(data.rounds[i].drawName)) {
+            continue;
+        }
+
+        x.push(data.rounds[i].drawDate);
+        y.push(parseInt(data.rounds[i].drawCRS));
+        z.push([
+            parseInt(data.rounds[i].dd1.replace(/,/g, '')),
+            parseInt(data.rounds[i].dd2.replace(/,/g, '')),
+            parseInt(data.rounds[i].dd4.replace(/,/g, '')),
+            parseInt(data.rounds[i].dd5.replace(/,/g, '')),
+            parseInt(data.rounds[i].dd6.replace(/,/g, '')),
+            parseInt(data.rounds[i].dd7.replace(/,/g, '')),
+            parseInt(data.rounds[i].dd8.replace(/,/g, '')),
+            parseInt(data.rounds[i].dd10.replace(/,/g, '')),
+            parseInt(data.rounds[i].dd11.replace(/,/g, '')),
+            parseInt(data.rounds[i].dd12.replace(/,/g, '')),
+            parseInt(data.rounds[i].dd13.replace(/,/g, '')),
+            parseInt(data.rounds[i].dd14.replace(/,/g, '')),
+            parseInt(data.rounds[i].dd15.replace(/,/g, '')),
+            parseInt(data.rounds[i].dd16.replace(/,/g, '')),
+            parseInt(data.rounds[i].dd17.replace(/,/g, ''))
+        ]);
+
+        text.push(data.rounds[i].drawCRS);
+        if (!category.has(data.rounds[i].drawName)) {
+            category.add(data.rounds[i].drawName);
+            categories.push(new Category(data.rounds[i].drawName));
+        }
+    }
+
+    return { x, y, z, text, category };
+}
+
+function prepareData(data, singleCategory) {
     let x = [];
     let y = [];
     let z = [];
     let text = [];
     let category = new Set();
     for (let i = 0; i < data.rounds.length; i++) {
-        if (selectedCategories.length > 0 && !selectedCategories.includes(data.rounds[i].drawName)) {
+        if (singleCategory != data.rounds[i].drawName) {
             continue;
         }
 
@@ -63,36 +108,69 @@ function prepareData(data, selectedCategories = []) {
     return { x, y, z, text, category };
 }
 
-function drawCRSScoreHistory(data, selectedCategories = []) {
+function drawCRSScoreHistory() {
     eeDraws = document.getElementById('ee-draws');
+    let drawData = [];
+    var lastDataPointDate;
+    var previous10DataPointsDate;
 
-    if (selectedCategories.length > 0) {
-        // recall prepareData with selectedCategories
-        data = prepareData(originalData, selectedCategories);
+    // check if none of the categories are selected
+    if (categories.every(cat => cat.selected.peek() == undefined || cat.selected.peek() == false)) {
+        categories.forEach(cat => {
+            if (cat.name == "General") {
+                cat.selected(true);
+            }
+        });
     }
 
-    let drawData = {
-        x: data.x,
-        y: data.y,
-        color: data.category,
-        text: data.text,
-        line: {
-            shape: 'spline',
-            smoothing: 0.7,
-        },
-        type: 'scattergl',
-        mode: 'lines+markers',
-        textposition: 'top center',
+    for (let i = 0; i < categories.length; i++) {
+        let category = categories[i];
+        if (category.selected.peek() == undefined || category.selected.peek() == false) {
+            continue;
+        }
+        let selectedData = prepareData(originalData, category.name);
+        drawData.push({
+            x: selectedData.x,
+            y: selectedData.y,
+            color: category.name,
+            text: selectedData.text,
+            name: category.name,
+            line: {
+                shape: 'spline',
+                smoothing: 0.7,
+            },
+            type: 'scatter'
+        });
+
+        if (lastDataPointDate == undefined) {
+            lastDataPointDate = selectedData.x[0];
+        }
+        else {
+            if (lastDataPointDate < selectedData.x[0]) {
+                lastDataPointDate = selectedData.x[0];
+            }
+        }
+
+        var previousDataLength = selectedData.x.length < 10 ? selectedData.x.length : 10;
+
+        if (previous10DataPointsDate == undefined) {
+            previous10DataPointsDate = selectedData.x[previousDataLength];
+        }
+        else {
+            if (previous10DataPointsDate > selectedData.x[previousDataLength]) {
+                previous10DataPointsDate = selectedData.x[previousDataLength];
+            }
+        }
     }
 
-    var today = new Date();
-    let sixMonthsAgo = new Date();
-    sixMonthsAgo.setMonth(today.getMonth() - 6);
+    lastDataPointDate = new Date(lastDataPointDate);
+    lastDataPointDate.setDate(lastDataPointDate.getDate() + 3);
+    lastDataPointDate = lastDataPointDate.toISOString().split('T')[0];
 
     var layout = {
         margin: { t: 0 },
         xaxis: {
-            autorange: true,
+            autorange: false,
             title: {
                 text: 'Draw Date'
             },
@@ -114,9 +192,10 @@ function drawCRSScoreHistory(data, selectedCategories = []) {
                     { step: 'all' }
                 ]
             },
-            range: [data.x[30], data.x[0]],
+            range: [previous10DataPointsDate, lastDataPointDate],
+            // range: ['2018-01-17', '2025-01-23'],
             rangeslider: {},
-            fixedrange: true
+            fixedrange: false
         },
         yaxis: {
             title: {
@@ -131,7 +210,7 @@ function drawCRSScoreHistory(data, selectedCategories = []) {
         displayModeBar: false
     };
 
-    Plotly.newPlot(eeDraws, [drawData], layout, config);
+    Plotly.newPlot(eeDraws, drawData, layout, config);
 }
 
 function drawLastScoreContribution(data) {
@@ -202,7 +281,6 @@ function drawScoreDistributionsHeatmap(data) {
         displayModeBar: false
     };
 
-    // Plotly.newPlot('score-distributions-heatmap', data, layout, config);
     Plotly.newPlot('score-distributions-heatmap', drawData, layout, config);
 
 }
@@ -222,33 +300,19 @@ class LastRoundViewModel {
     }
 }
 
-class ScoreDistributionOptionsModel {
-    constructor(categories) {
-        let allOption = 'All';
-        let generalOption = 'General | No Program Specified';
-        let selectedOptions = [];
-        let computedCategories = Array.from(categories);
+class Category {
+    constructor(category) {
+        var self = this;
+        self.name = category;
+        self.selected = ko.observable();
 
-        computedCategories.unshift(generalOption);
-        computedCategories.unshift(allOption);
-
-
-        this.categories = ko.observableArray(computedCategories);
-        this.selectedCategory = ko.observable();
-        this.selectedCategory.subscribe(function (newValue) {
-            switch (newValue) {
-                case allOption:
-                    selectedOptions = [];
-                    break;
-                case generalOption:
-                    selectedOptions = ['General', 'No Program Specified'];
-                    break;
-                default:
-                    selectedOptions = [newValue];
-                    break;
-            }
-
-            drawCRSScoreHistory(preparedData, selectedOptions);
+        self.selected.subscribe(function (newValue) {
+            categories.forEach(cat => {
+                if (cat.name == self.name || self.name.includes(cat.name)) {
+                    cat.selected(newValue);
+                }
+            })
+            drawCRSScoreHistory();
         });
     }
 }
