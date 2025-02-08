@@ -250,19 +250,44 @@ function drawLastScoreContribution(data) {
     Plotly.newPlot('score-distribution', myData, layout, config);
 }
 
+function formatNumber(n) {
+    if (n >= 1000) {
+        return (n / 1000).toFixed(1) + "K";
+    } else {
+        return n.toString();
+    }
+}
+
+function heatmapHoverText(x, y, z) {
+    return z.map((row, i) => row.map((item, j) => {
+        return `
+Range: ${x[j]}<br>
+Date:  ${y[i]}<br>
+Count: ${formatNumber(item)}`
+    }));
+}
+
 function drawScoreDistributionsHeatmap(data) {
+    let x = ["0-300", "301-350", "351-400", "401-410", "411-420", "421-430", "431-440", "441-450", "451-460", "461-470", "471-480", "481-490", "491-500", "501-600", "601-1200"];
+    let y = data.x;
+    let z = data.z.filter(arr => !arr.every(val => val === 0)).map(arr => arr.reverse());
     let drawData = [{
-        y: data.x,
-        x: ["0-300", "301-350", "351-400", "401-410", "411-420", "421-430", "431-440", "441-450", "451-460", "461-470", "471-480", "481-490", "491-500", "501-600", "601-1200"],
-        z: data.z.filter(arr => !arr.every(val => val === 0)).map(arr => arr.reverse()),
-        // text: data.x,
+        y: y,
+        x: x,
+        z: z,
         textposition: 'auto',
+        text: heatmapHoverText(x, y, z),
+        hoverinfo: 'text',
         type: 'heatmap',
         colorscale: 'Reds',
-        showscale: true
+        showscale: true,
     }];
 
     var layout = {
+        autosize: true,
+        margin: {
+            t: 16,
+        },
         xaxis: {
             autorange: true,
             title: {
