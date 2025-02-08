@@ -3,5 +3,6 @@
         "scattergl",
         "xaxis",
         "yaxis"
-    ]
+    ],
+    "svg.preview.background": "dark-transparent"
 }
