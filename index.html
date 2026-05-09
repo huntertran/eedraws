@@ -3,132 +3,172 @@
 
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport"
-          content="width=device-width, initial-scale=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Express Entry Draws</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
-          rel="stylesheet"
-          integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH"
-          crossorigin="anonymous">
-    <link rel="icon"
-          href="./assets/images/favicon.png">
-    <link rel="stylesheet"
-          href="main.css">
 
-    <!-- Facebook Open Graph Meta Tags -->
-    <meta property="og:title"
-          content="Express Entry Draws">
-    <meta property="og:description"
-          content="Stay updated with the latest Express Entry draws and scores.">
-    <meta property="og:image"
-          content="https://huntertran.github.io/eedraws/assets/images/og_shared.png">
-    <meta property="og:url"
-          content="https://huntertran.github.io/eedraws/">
-    <meta property="og:type"
-          content="website">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Caveat:wght@600&family=IBM+Plex+Mono:wght@400;600&family=IBM+Plex+Sans:wght@300;400;600&display=swap" rel="stylesheet">
 
-    <!-- Twitter Card Meta Tags -->
-    <meta name="twitter:card"
-          content="summary_large_image">
-    <meta name="twitter:title"
-          content="Express Entry Draws">
-    <meta name="twitter:description"
-          content="Stay updated with the latest Express Entry draws and scores.">
-    <meta name="twitter:image"
-          content="https://huntertran.github.io/eedraws/assets/images/og_shared.png">
-    <meta name="twitter:url"
-          content="https://huntertran.github.io/eedraws/">
-    <meta name="twitter:creator"
-          content="@huntertrantuan">
+    <link rel="icon" href="./assets/images/favicon.png">
+    <link rel="stylesheet" href="main.css">
 
-    <!-- Google Search Meta Tags -->
-    <meta name="description"
-          content="Stay updated with the latest Express Entry draws and scores.">
-    <meta name="keywords"
-          content="Express Entry, Draws, Immigration, Canada, IRCC, CRS Scores">
-    <meta name="author"
-          content="Hunter Tran">
-    <meta name="robots"
-          content="index, follow">
+    <meta property="og:title" content="Express Entry Draws">
+    <meta property="og:description" content="Stay updated with the latest Express Entry draws and scores.">
+    <meta property="og:image" content="https://huntertran.github.io/eedraws/assets/images/og_shared.png">
+    <meta property="og:url" content="https://huntertran.github.io/eedraws/">
+    <meta property="og:type" content="website">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Express Entry Draws">
+    <meta name="twitter:description" content="Stay updated with the latest Express Entry draws and scores.">
+    <meta name="twitter:image" content="https://huntertran.github.io/eedraws/assets/images/og_shared.png">
+    <meta name="twitter:url" content="https://huntertran.github.io/eedraws/">
+    <meta name="twitter:creator" content="@huntertrantuan">
+    <meta name="description" content="Stay updated with the latest Express Entry draws and scores.">
+    <meta name="keywords" content="Express Entry, Draws, Immigration, Canada, IRCC, CRS Scores">
+    <meta name="author" content="Hunter Tran">
+    <meta name="robots" content="index, follow">
 </head>
 
 <body>
-    <div class="container-fluid overflow-hidden">
-        <div id="latest-draw-container"
-             class="row">
-            <div class="d-flex bg-primary mb-3">
-                <h1 class="h2 text-light">Latest Draw</h1>
-            </div>
-            <div class="col-md-4">
-                <div class="card">
-                    <div class="card-header h5 text-center">
-                        <span data-bind="text: drawDate">
-                    </div>
-                    <div class="card-body">
-                        <table>
-                            <tr>
-                                <td>Draw Number:</td>
-                                <td><b><span data-bind="text: drawNumber"></span></b></td>
-                            </tr>
-                            <tr>
-                                <td>Draw Date:</td>
-                                <td>
-                                    <b>
-                                        <span data-bind="text: drawDate"></span>
-                                        (<span data-bind="text: elapsedTime"></span> days ago)
-                                    </b>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>Category:</td>
-                                <td><b><span data-bind="text: category"></span></b></td>
-                            </tr>
-                            <tr>
-                                <td>Draw CRS Score:</td>
-                                <td><b><span data-bind="text: crsScore"></span></b></td>
-                            </tr>
-                            <tr>
-                                <td>Number of Invitations:</td>
-                                <td><b><span data-bind="text: invitations"></span></b></td>
-                            </tr>
-                        </table>
-                    </div>
-                </div>
-            </div>
-            <div id="score-distribution"
-                 class="col-md-8"></div>
-        </div>
-        <div class="row no-gutters">
-            <div class="d-flex bg-primary mb-3">
-                <h1 class="h2 text-light">CRS Score History</h1>
-            </div>
-            <div id="category-select-container"
-                 data-bind='foreach: categories'>
-                <div>
-                    <input type="checkbox"
-                           data-bind="checked: selected, value: name"
-                           title="Category">
-                    <label data-bind="text: name"></label>
-                </div>
-            </div>
-            <div id="ee-draws"></div>
-        </div>
-        <div class="row no-gutters">
-            <div class="d-flex bg-primary mb-3">
-                <h1 class="h2 text-light">CRS Score Distributions Heatmap</h1>
-            </div>
-            <p class="text-center text-danger">Data before Jan 19, 2022 was not available</p>
-            <div id="score-distributions-heatmap"></div>
+
+    <div id="loading-overlay">
+        <div class="loading-inner">
+            <div class="loading-score">EE</div>
+            <div class="loading-text">Fetching IRCC data&hellip;</div>
         </div>
     </div>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
-            integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
-            crossorigin="anonymous"></script>
-    <script src="https://cdn.plot.ly/plotly-2.32.0.min.js"
-            charset="utf-8"></script>
-    <script type='text/javascript'
-            src="https://cdnjs.cloudflare.com/ajax/libs/knockout/3.5.1/knockout-latest.js"></script>
+    <header class="site-header">
+        <div class="header-accent"></div>
+        <div class="header-content">
+            <div class="site-logo">
+                <span class="logo-mark">EE</span>
+                <span class="logo-text">Express Entry Draws</span>
+            </div>
+            <div class="header-meta">Live data &middot; Canada.ca / IRCC</div>
+        </div>
+    </header>
+
+    <main class="site-main">
+
+        <!-- Latest Draw -->
+        <section class="section" id="latest-draw-container">
+            <div class="section-label">Latest Draw</div>
+            <div class="latest-draw-grid">
+                <div class="hero-block">
+                    <div class="hero-label">CRS Cutoff</div>
+                    <div class="hero-value" data-bind="text: crsScore"></div>
+                    <div class="hero-sub" data-bind="text: drawDate"></div>
+                </div>
+                <div class="detail-row">
+                    <div class="detail-item">
+                        <span class="detail-label">Draw #</span>
+                        <span class="detail-value" data-bind="text: drawNumber"></span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-label">Date</span>
+                        <span class="detail-value" data-bind="text: drawDate"></span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-label">Days Ago</span>
+                        <span class="detail-value" data-bind="text: elapsedTime"></span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-label">Category</span>
+                        <span class="detail-value" data-bind="text: category"></span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-label">Invitations</span>
+                        <span class="detail-value" data-bind="text: invitations"></span>
+                    </div>
+                </div>
+                <div id="score-distribution"></div>
+            </div>
+        </section>
+
+        <!-- Global Category Filter -->
+        <div class="filter-bar" id="filter-bar">
+            <span class="filter-bar-label">Category</span>
+            <div class="filter-toggle-wrap">
+                <button class="filter-toggle" id="filter-toggle" onclick="toggleFilterPanel()">
+                    <span id="filter-summary">Loading&hellip;</span>
+                    <span class="filter-chevron"></span>
+                </button>
+                <div class="filter-callout" id="filter-callout">
+                    <svg class="callout-arrow" viewBox="0 0 28 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M 18 46 C 14 34 8 22 10 4" stroke="#E03028" stroke-width="2.5" stroke-linecap="round"/>
+                        <path d="M 10 4 L 4 13" stroke="#E03028" stroke-width="2.5" stroke-linecap="round"/>
+                        <path d="M 10 4 L 18 11" stroke="#E03028" stroke-width="2.5" stroke-linecap="round"/>
+                    </svg>
+                    <span class="callout-text">Change category here</span>
+                </div>
+            </div>
+            <div class="filter-panel" id="filter-panel">
+                <p class="filter-hint">Filter all charts by draw category</p>
+                <div class="category-filters" id="category-select-container" data-bind="foreach: categories">
+                    <label class="category-filter">
+                        <input type="checkbox" data-bind="checked: selected, value: name" title="Category">
+                        <span data-bind="text: name"></span>
+                    </label>
+                </div>
+            </div>
+        </div>
+
+        <!-- CRS Score History -->
+        <section class="section">
+            <div class="section-header">
+                <div class="section-label">CRS Score History</div>
+            </div>
+            <div class="chart-toolbar">
+                <button class="reset-btn" onclick="resetHistoryZoom()" title="Reset to default range">Reset View</button>
+            </div>
+            <div id="ee-draws"></div>
+        </section>
+
+        <div class="charts-row">
+            <!-- Invitations per Draw -->
+            <section class="section">
+                <div class="section-header">
+                    <div class="section-label">Invitations per Draw</div>
+                </div>
+                <div class="chart-toolbar">
+                    <button class="reset-btn" onclick="resetInvitationsZoom()" title="Reset to default range">Reset View</button>
+                </div>
+                <div id="invitations-history"></div>
+            </section>
+
+            <!-- CRS Score vs Invitations -->
+            <section class="section">
+                <div class="section-header">
+                    <div class="section-label">CRS Score vs Invitations</div>
+                </div>
+                <div class="chart-toolbar">
+                    <button class="reset-btn" onclick="resetScatterView()" title="Reset to default view">Reset View</button>
+                </div>
+                <div id="score-vs-invitations"></div>
+            </section>
+        </div>
+
+        <!-- Score Distribution Heatmap -->
+        <section class="section">
+            <div class="section-header">
+                <div class="section-label">Score Distribution Heatmap</div>
+            </div>
+            <p class="data-note">Data before Jan 19, 2022 was not available</p>
+            <div id="score-distributions-heatmap"></div>
+        </section>
+
+    </main>
+
+    <footer class="site-footer">
+        <span>Data sourced from <a href="https://www.canada.ca/en/immigration-refugees-citizenship/corporate/mandate/policies-operational-instructions/residents/express-entry.html" target="_blank" rel="noopener">IRCC Canada.ca</a></span>
+        <span class="footer-sep">&middot;</span>
+        <span>Built by Hunter Tran</span>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/echarts@5.5.0/dist/echarts.min.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/knockout/3.5.1/knockout-latest.js"></script>
     <script src="main.js"></script>
 </body>
 
